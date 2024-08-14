@@ -15,8 +15,6 @@ namespace CallingQuickstart
     public partial class MainPage : Page
     {
 #if CTE
-        private const string teamsAuthToken = "<TEAMS_AUTHENTICATION_TOKEN>";
-
         private TeamsCallAgent teamsCallAgent;
         private TeamsCommunicationCall teamsCall;
 
@@ -43,9 +41,10 @@ namespace CallingQuickstart
                 CameraList.SelectedIndex = 0;
             }
 
-            var teamsTokenCredential = new CallTokenCredential(teamsAuthToken);
+            string token = TeamsAuthToken.Text.Trim();
+            var teamsTokenCredential = new CallTokenCredential(token);
 
-            var callAgentOptions = new CallAgentOptions()
+          var callAgentOptions = new CallAgentOptions()
             {
                 DisplayName = $"{Environment.MachineName}/{Environment.UserName}",
                 //https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes/blob/master/all/all.csv
@@ -70,13 +69,13 @@ namespace CallingQuickstart
 
         private async void CameraList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedCamerea = CameraList.SelectedItem as VideoDeviceDetails;
+            var selectedCamera = CameraList.SelectedItem as VideoDeviceDetails;
             if (cameraStream != null)
             {
                 await cameraStream.StopPreviewAsync();
             }
             
-            cameraStream = new LocalOutgoingVideoStream(selectedCamerea);
+            cameraStream = new LocalOutgoingVideoStream(selectedCamera);
             var localUri = await cameraStream.StartPreviewAsync();
             LocalVideo.Source = MediaSource.CreateFromUri(localUri);
 
@@ -88,7 +87,9 @@ namespace CallingQuickstart
 
         private async void CallButton_Click(object sender, RoutedEventArgs e)
         {
-            var callString = CalleeTextBox.Text.Trim();
+            await InitCallAgentAndDeviceManagerAsync();
+
+            var callString = TeamsURL.Text.Trim();
 
             if (!string.IsNullOrEmpty(callString))
             {

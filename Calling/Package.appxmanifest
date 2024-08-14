@@ -4,12 +4,13 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
   IgnorableNamespaces="uap mp">
 
   <Identity
     Name="646c0233-13f7-4ea3-b02e-703b86c51a27"
-    Publisher="CN=Microsoft"
-    Version="1.0.0.0" />
+    Publisher="CN=Rajeev Dev"
+    Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="646c0233-13f7-4ea3-b02e-703b86c51a27" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -40,7 +41,18 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
-    </Application>
+      <Extensions>
+	    <uap5:Extension
+			Category="windows.appExecutionAlias"
+			Executable="Calling.exe"
+			EntryPoint="Calling.App">
+			<uap5:AppExecutionAlias>
+				<uap5:ExecutionAlias Alias="CallingApp.exe" />
+			</uap5:AppExecutionAlias>
+		</uap5:Extension>
+	  </Extensions>
+		
+	</Application>
   </Applications>
 
   <Capabilities>

@@ -24,22 +24,21 @@
         </Grid>
 
         <StackPanel Grid.Row="1">
-            <TextBox x:Name="CalleeTextBox" PlaceholderText="Who would you like to call?" TextWrapping="Wrap" VerticalAlignment="Center" />
-            <TextBlock Text="or" Padding="4,4,0,0" />
-            <TextBox x:Name="CalleeMeetingId" PlaceholderText="Teams Meeting Id" TextWrapping="Wrap" VerticalAlignment="Center" />
-            <TextBox x:Name="CalleeMeetingPasscode" PlaceholderText="Teams Meeting Passcode" TextWrapping="Wrap" VerticalAlignment="Center" />
+            <TextBox x:Name="TeamsAuthToken" PlaceholderText="Teamns Auth Token" TextWrapping="NoWrap" VerticalAlignment="Center" />
+            <TextBox x:Name="TeamsURL" PlaceholderText="Teams URL" TextWrapping="NoWrap" VerticalAlignment="Center" />
         </StackPanel>
-        
+
         <Grid Grid.Row="2" Background="LightGray">
             <Grid.RowDefinitions>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="119*"/>
+                <ColumnDefinition Width="632*"/>
+                <ColumnDefinition Width="750*"/>
             </Grid.ColumnDefinitions>
-            <MediaPlayerElement x:Name="LocalVideo" HorizontalAlignment="Center" Stretch="UniformToFill" Grid.Column="0" VerticalAlignment="Center" AutoPlay="True" />
-            <MediaPlayerElement x:Name="RemoteVideo" HorizontalAlignment="Center" Stretch="UniformToFill" Grid.Column="1" VerticalAlignment="Center" AutoPlay="True" />
+            <MediaPlayerElement x:Name="LocalVideo" HorizontalAlignment="Center" Stretch="UniformToFill" Grid.Column="0" VerticalAlignment="Center" AutoPlay="True" Grid.ColumnSpan="2" />
+            <MediaPlayerElement x:Name="RemoteVideo" HorizontalAlignment="Center" Stretch="UniformToFill" Grid.Column="2" VerticalAlignment="Center" AutoPlay="True" />
         </Grid>
         <StackPanel Grid.Row="3" Orientation="Vertical" Grid.RowSpan="2">
             <StackPanel Orientation="Horizontal" Margin="10">

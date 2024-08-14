@@ -6,12 +6,10 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Store;
 using Windows.Networking.PushNotifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using static System.Collections.Specialized.BitVector32;
 
 namespace CallingQuickstart
 {
@@ -40,28 +38,60 @@ namespace CallingQuickstart
         /// </summary>
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            if (e.Kind == ActivationKind.Protocol || e is ToastNotificationActivatedEventArgs)
+            string argment = "OnActivated";
+            if (e.Kind == ActivationKind.CommandLineLaunch)
             {
-                // Ensure the current window is active
-                Window.Current.Activate();
-
-                // Handle notification activation
-                if (e is ToastNotificationActivatedEventArgs toastActivationArgs)
+                var commandLine = e as CommandLineActivatedEventArgs;
+                if (commandLine != null)
                 {
-                    ToastArguments args = ToastArguments.Parse(toastActivationArgs.Argument);
-                    string action = args?.Get("action");
-
-                    if (!string.IsNullOrEmpty(action))
-                    {
-                        var frame = Window.Current.Content as Frame;
-                        if (frame.Content is MainPage)
-                        {
-                            var mainPage = frame.Content as MainPage;
-                            await mainPage.AnswerIncomingCall(action);
-                        }
-                    }
+                    argment = commandLine.Operation.Arguments;
+                    //var operation = commandLine.Operation;
+                    //CStatus.Status = operation.Arguments;
                 }
             }
+
+            Frame rootFrame = Window.Current.Content as Frame;
+
+            // Do not repeat app initialization when the Window already has content,  
+            // just ensure that the window is active  
+            if (rootFrame == null)
+            {
+                // Create a Frame to act as the navigation context and navigate to the first page  
+                rootFrame = new Frame();
+
+                rootFrame.NavigationFailed += OnNavigationFailed;
+                // Place the frame in the current Window  
+                Window.Current.Content = rootFrame;
+            }
+
+            rootFrame.Navigate(typeof(MainPage), argment);
+
+            Window.Current.Activate();
+            base.OnActivated(e);
+
+
+            //if (e.Kind == ActivationKind.Protocol || e is ToastNotificationActivatedEventArgs)
+            //{
+            //    // Ensure the current window is active
+            //    Window.Current.Activate();
+
+            //    // Handle notification activation
+            //    if (e is ToastNotificationActivatedEventArgs toastActivationArgs)
+            //    {
+            //        ToastArguments args = ToastArguments.Parse(toastActivationArgs.Argument);
+            //        string action = args?.Get("action");
+
+            //        if (!string.IsNullOrEmpty(action))
+            //        {
+            //            var frame = Window.Current.Content as Frame;
+            //            if (frame.Content is MainPage)
+            //            {
+            //                var mainPage = frame.Content as MainPage;
+            //                await mainPage.AnswerIncomingCall(action);
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>

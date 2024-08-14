@@ -1,4 +1,5 @@
 ﻿using Azure.Communication.Calling.WindowsClient;
+using CommunityToolkit.WinUI;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -20,7 +21,8 @@ namespace CallingQuickstart
     public partial class MainPage : Page
     {
 #if CTE
-        private const string teamsAuthToken = "<TEAMS_AUTHENTICATION_TOKEN>";
+        //private const string teamsAuthToken = "<TEAMS_AUTHENTICATION_TOKEN>";
+        private const string teamsAuthToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjYwNUVCMzFEMzBBMjBEQkRBNTMxODU2MkM4QTM2RDFCMzIyMkE2MTkiLCJ4NXQiOiJZRjZ6SFRDaURiMmxNWVZpeUtOdEd6SWlwaGsiLCJ0eXAiOiJKV1QifQ.eyJza3lwZWlkIjoib3JnaWQ6MmEyZWU0YTgtOTAxZS00MDRkLTllZmEtODk1ZWQ4Y2JiOGMwIiwic2NwIjoxMDI0LCJjc2kiOiIxNzIzMTk1MjYzIiwiZXhwIjoxNzIzMjAwMTU5LCJyZ24iOiJhbWVyIiwidGlkIjoiNTg2MDczZmItMDZhZC00OWM4LWIwZDYtZGJiNTg4MDdmNGQxIiwiYWNzU2NvcGUiOiJ2b2lwLGNoYXQiLCJyZXNvdXJjZUlkIjoiZWZhNTAxNDMtZGU3NC00MTVhLTkyODgtOGI2MWFlMjEzMzRiIiwiYWFkX2lhdCI6IjE3MjMxOTUyNjMiLCJhYWRfdXRpIjoiR0x3bGVjRFMtRU9CQVhLTHNJNF9BQSIsImFhZF9hcHBpZCI6IjFmZDUxMThlLTI1NzYtNDI2My04MTMwLTk1MDMwNjRjODM3YSIsImlhdCI6MTcyMzE5NTU2M30.W56syuDFwU7cp0qmiZZTTjafolbg8wiAl8juJ6C9JjQL7IPMjOhDmw9jdFJ4i0obpq1SU3fZyadgVeeQVXdeNNDPCjn7-Z2X-bdWQG0C2ZMZ6ql3SUdWWl4Cmg7YQJDl_8flqCLjSebWEVKOnkmYOKU91ywEc0Rq77t46DfglKk5nDnu8swX1AcHcf3B7228UTwianA_INpg8y6EYT3hNe5T69mGwYMsY28vvHmcHqq0nDRyI1c1tCou9lBYE36I3PG0EMGCal62hhqdDIHBTHGNNu0V3fPPCxxvsvh5o7_IiFANkPBd_FAfvxJvT11xVDMeiSdHNokKGyM21YWJPg";
 
         private TeamsCallAgent teamsCallAgent;
         private TeamsCommunicationCall teamsCall;
@@ -162,10 +164,15 @@ namespace CallingQuickstart
                     await call?.UnmuteOutgoingAudioAsync();
                 }
 
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                await DispatcherQueue.EnqueueAsync(async () =>
                 {
                     AppTitleBar.Background = call.IsOutgoingAudioMuted ? new SolidColorBrush(Colors.PaleVioletRed) : new SolidColorBrush(Colors.SeaGreen);
                 });
+
+                //await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                //{
+                //    AppTitleBar.Background = call.IsOutgoingAudioMuted ? new SolidColorBrush(Colors.PaleVioletRed) : new SolidColorBrush(Colors.SeaGreen);
+                //});
             }
         }
 
@@ -212,25 +219,40 @@ namespace CallingQuickstart
             {
                 var state = call.State;
 
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                await DispatcherQueue.EnqueueAsync(async () =>
                 {
                     QuickstartTitle.Text = $"{Package.Current.DisplayName} - {state.ToString()}";
-                    Window.Current.SetTitleBar(AppTitleBar);
+                    //Window.Current.SetTitleBar(AppTitleBar);
 
                     HangupButton.IsEnabled = state == CallState.Connected || state == CallState.Ringing;
                     CallButton.IsEnabled = !HangupButton.IsEnabled;
                     MuteLocal.IsEnabled = !CallButton.IsEnabled;
                 });
 
+                //await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                //{
+                //    QuickstartTitle.Text = $"{Package.Current.DisplayName} - {state.ToString()}";
+                //    Window.Current.SetTitleBar(AppTitleBar);
+
+                //    HangupButton.IsEnabled = state == CallState.Connected || state == CallState.Ringing;
+                //    CallButton.IsEnabled = !HangupButton.IsEnabled;
+                //    MuteLocal.IsEnabled = !CallButton.IsEnabled;
+                //});
+
                 switch (state)
                 {
                     case CallState.Connected:
                         {
                             await call.StartAudioAsync(micStream);
-                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            await DispatcherQueue.EnqueueAsync(async () =>
                             {
                                 Stats.Text = $"Call id: {Guid.Parse(call.Id).ToString("D")}, Remote caller id: {call.RemoteParticipants.FirstOrDefault()?.Identifier.RawId}";
                             });
+
+                            //await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            //{
+                            //    Stats.Text = $"Call id: {Guid.Parse(call.Id).ToString("D")}, Remote caller id: {call.RemoteParticipants.FirstOrDefault()?.Identifier.RawId}";
+                            //});
 
                             break;
                         }
@@ -239,10 +261,15 @@ namespace CallingQuickstart
                             call.RemoteParticipantsUpdated -= OnRemoteParticipantsUpdatedAsync;
                             call.StateChanged -= OnStateChangedAsync;
 
-                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            await DispatcherQueue.EnqueueAsync(async () =>
                             {
                                 Stats.Text = $"Call ended: {call.CallEndReason.ToString()}";
                             });
+
+                            //await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            //{
+                            //    Stats.Text = $"Call ended: {call.CallEndReason.ToString()}";
+                            //});
 
                             call.Dispose();
 
